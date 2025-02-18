@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <title>Registration Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url("{% static 'images/couple_photo1.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /*height: 10vh;*/
+    }
+    .registration-form {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: block !important;
+    }
+    .registration-form h2 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .registration-form hr {
+      border: 0;
+      height: 1px;
+      background: #ccc;
+      margin: 20px 0;
+    }
+    .registration-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .registration-form input,
+    .registration-form select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .registration-form input[type="radio"] {
+      width: auto;
+      margin-right: 10px;
+    }
+    .registration-form button {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .registration-form button:hover {
+      background: #218838;
+    }
+  </style>
+  <script>
+    function validateAge(event) {
+        event.preventDefault(); // Stop form submission
+
+        // Get the user's entered date of birth
+        let dob = document.getElementById("dob").value;  // 'dob' instead of 'birth_date'
+        if (!dob) {
+            alert("Please enter your Date of Birth.");
+            return false;
+        }
+
+        // Convert to date object
+        let dobObj = new Date(dob);
+        let today = new Date();
+
+        // Calculate age
+        let age = today.getFullYear() - dobObj.getFullYear();
+        let monthDiff = today.getMonth() - dobObj.getMonth();
+        let dayDiff = today.getDate() - dobObj.getDate();
+
+        // Adjust age if birthday hasn't occurred yet this year
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+            age--;
+        }
+
+        // Check if user is under 21
+        if (age < 21) {
+            alert("You must be at least 21 years old to register.");
+            return false;
+        }
+
+        // If age is valid, submit the form
+        document.getElementById("registerForm").submit();
+    }
+</script>
+</head>
+<body>
+<form action="{% url 'registration' %}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="registration-form">
+    <h1 style="text-align: center;">Register for free!</h1>
+    <h2>Account Setup</h2>
+    <label for="profile_for">Create Profile For:</label>
+    <select id="profile_for" name="profile_for">
+      <option value="Myself">My Self</option>
+      <option value="My Sister">My Sister</option>
+      <option value="My Brother">My Brother</option>
+      <option value="My Friend">My Friend</option>
+      <option value="My Son">My Son</option>
+      <option value="My Daughter">My Daughter</option>
+      <option value="My Relative">My Relative</option>
+    </select>
+
+    <label for="name">Bride/Groom Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" name="phone" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label>Gender:</label>
+    <input type="radio" id="Male" name="gender" value="Male">
+    <label for="Male">Male</label>
+    <input type="radio" id="Female" name="gender" value="Female">
+    <label for="Female">Female</label>
+
+    <hr>
+
+<!-- Basic Information -->
+    <h2>Basic Information</h2>
+    <label for="dob">DOB:</label>
+    <input type="date" id="dob" name="dob" required>
+
+    <label for="religion">Religion:</label>
+    <select id="religion" name="religion">
+      <option value="Muslim">Muslim</option>
+      <option value="Hindu">Hindu</option>
+      <option value="Christian">Christian</option>
+    </select>
+
+    <label for="nationality">Nationality:</label>
+    <input type="text" id="nationality" name="nationality" value="Indian" readonly>
+
+    <label for="password">Set Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <hr>
+    
+<!-- Personal Information -->
+    <h2>Personal Information</h2>
+    <label for="height">Height (in cm):</label>
+    <select id="height" name="height">
+      <option value="">Select Height</option>
+      <option value="100">100 cm</option>
+      <option value="110">110 cm</option>
+      <option value="120">120 cm</option>
+      <option value="130">130 cm</option>
+      <option value="140">140 cm</option>
+      <option value="150">150 cm</option>
+      <option value="160">160 cm</option>
+      <option value="170">170 cm</option>
+      <option value="180">180 cm</option>
+      <option value="190">190 cm</option>
+      <option value="200">200 cm</option>
+      <option value="210">210 cm</option>
+    </select>
+
+    <label for="weight">Weight (in kg):</label>
+    <select id="weight" name="weight">
+      <option value="">Select Weight</option>
+      <option value="40">40 kg</option>
+      <option value="45">45 kg</option>
+      <option value="50">50 kg</option>
+      <option value="55">55 kg</option>
+      <option value="60">60 kg</option>
+      <option value="65">65 kg</option>
+      <option value="70">70 kg</option>
+      <option value="75">75 kg</option>
+      <option value="80">80 kg</option>
+      <option value="85">85 kg</option>
+      <option value="90">90 kg</option>
+      <option value="95">95 kg</option>
+      <option value="100">100 kg</option>
+      <option value="110">110 kg</option>
+    </select>
+
+    <label for="marital_status">Marital Status:</label>
+    <select id="marital_status" name="marital_status">
+      <option value="Never Married">Never Married</option>
+      <option value="Divorced">Divorced</option>
+      <option value="Widowed">Widowed</option>
+      <option value="Nikah Divorce">Nikah Divorce</option>
+      <option value="Awaiting Divorce">Awaiting divorce</option>
+      <option value="Seperated">Separated</option>
+      <option value="Anulled">Anulled</option>
+    </select>
+
+    <label for="body_type">Body Type:</label>
+    <select id="body_type" name="body_type">
+      <option value="Slim">Slim</option>
+      <option value="Tall">Tall</option>
+      <option value="Short">Short</option>
+      <option value="Average">Average</option>
+      <option value="Fit">Fit</option>
+      <option value="Toned">Toned</option>
+      <option value="Plus Size">Plus size</option>
+      <option value="Big and Tall">Big & Tall</option>
+      <option value="Chubby">Chubby</option>
+    </select>
+
+    <label for="physically_challenged">Physically Challenged:</label>
+    <input type="radio" id="True" name="physically_challenged" value="True">
+    <label for="True">Yes</label>
+    <input type="radio" id="False" name="physically_challenged" value="False">
+    <label for="False">No</label>
+
+    <hr>
+
+    <!-- Education and location -->
+    <h2>Education and Location</h2>
+    <label for="highest_education">Highest Education</label>
+    <select id="highest_education" name="highest_education" required>
+      <option value="Doctorate">Doctorate</option>
+      <option value="Masters">Masters</option>
+      <option value="Bachelors">Bachelors</option>
+      <option value="Diploma">Diploma</option>
+      <option value="High/Secondary School">High/Secondary school</option>
+      <option value="Less than High School">Less than high school</option>
+    </select>
+
+    <label for="course">Course</label>
+    <select id="course" name="course">
+      <option value="MCA">MCA</option>
+      <option value="MBA">MBA</option>
+      <option value="Mcom">Mcom</option>
+      <option value="Audiology">Audiology</option>
+      <option value="MPharm">MPharm</option>
+      <option value="IRS">IRS</option>
+      <option value="IPS">IPS</option>
+      <option value="IAS">IAS</option>
+      <option value="MSc Nursing">Msc Nursing</option>
+      <option value="MSc Agriculture">Msc Agriculture</option>
+      <option value="MArch">MArch</option>
+    </select>
+
+    <label for="home-location">Home Location</label>
+    <label for="country">Country</label>
+    <select id="country" name="country">
+      <option value="India" selected>India</option>
+    </select>
+    <label for="state">State</label>
+    <select id="state" name="state">
+      <option value="Kerala" selected>Kerala</option>
+    </select>
+
+    <label for="district">District:</label>
+    <select id="district" name="district" required>
+      <option value="" disabled selected>Select your district</option>
+      <option value="Alappuzha">Alappuzha</option>
+      <option value="Ernakulam">Ernakulam</option>
+      <option value="Idukki">Idukki</option>
+      <option value="Kannur">Kannur</option>
+      <option value="Kasaragod">Kasaragod</option>
+      <option value="Kollam">Kollam</option>
+      <option value="Kottayam">Kottayam</option>
+      <option value="Kozhikode">Kozhikode</option>
+      <option value="Malappuram">Malappuram</option>
+      <option value="Palakkad">Palakkad</option>
+      <option value="Pathanamthitta">Pathanamthitta</option>
+      <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+      <option value="Thrissur">Thrissur</option>
+      <option value="Wayanad">Wayanad</option>
+    </select>
+
+    <label for="city">City:</label>
+    <select id="city" name="city" required>
+      <option value="" disabled selected>Select your city</option>
+      <!-- Thiruvananthapuram District -->
+      <option value="Neyyattinkara">Neyyattinkara</option>
+      <option value="Varkala">Varkala</option>
+  
+      <!-- Ernakulam District -->
+      <option value="Aluva">Aluva</option>
+      <option value="Angamaly">Angamaly</option>
+      <option value="Perumbavoor">Perumbavoor</option>
+
+      <!-- Kozhikode District -->
+      <option value="Feroke">Feroke</option>
+      <option value="Kunnamangalam">Kunnamangalam</option>
+  
+      <!-- Thrissur District -->
+      <option value="Guruvayur">Guruvayur</option>
+      <option value="Chalakudy">Chalakudy</option>
+  
+      <!-- Kollam District -->
+      <option value="Karunagappally">Karunagappally</option>
+      <option value="Punalur">Punalur</option>
+
+      <!-- Kottayam District -->
+      <option value="Changanassery">Changanassery</option>
+      <option value="Pala">Pala</option>
+
+      <!-- Malappuram District -->
+      <option value="Manjeri">Manjeri</option>
+      <option value="Tirur">Tirur</option>
+    </select>
+
+<!-- self description -->
+    <h2>Self Description</h2>
+    <label for="community">Community:</label>
+    <select id="community" name="community" required>
+      <option value="" disabled selected>Select your community</option>
+  
+      <!-- Hindu Communities -->
+      <option value="Nair">Nair</option>
+      <option value="Ezhava">Ezhava</option>
+      <option value="Brahmin">Brahmin</option>
+      <option value="Vishwakarma">Vishwakarma</option>
+      <option value="Scheduled Caste (SC)">Scheduled Caste (SC)</option>
+  
+      <!-- Muslim Communities -->
+      <option value="Mappila">Mappila</option>
+      <option value="Thangal">Thangal</option>
+  
+      <!-- Christian Communities -->
+      <option value="Syrian Christian">Syrian Christian</option>
+      <option value="Latin Catholic">Latin Catholic</option>
+      <option value="Jacobite">Jacobite</option>
+      <option value="Marthoma">Marthoma</option>
+  
+      <!-- Other Communities -->
+      <option value="Anglo-Indian">Anglo-Indian</option>
+      <option value="Jewish">Jewish</option>
+      <option value="Tribal">Tribal</option>
+    </select>
+
+    <label for="financial-status">Financial Status:</label>
+    <select id="financial-status" name="financial_status" required>
+      <option value="" disabled selected>Select your financial status</option>
+      <option value="Wealthy">Wealthy</option>
+      <option value="Upper Middle Class">Upper Middle Class</option>
+      <option value="Lower Middle Class">Lower Middle Class</option>
+      <option value="Financially Stable">Financially Stable</option>
+      <option value="Inherited Wealth">Inherited Wealth</option>
+      <option value="Business Family">Business Family</option>
+      <option value="Retired Family Income">Retired Family Income</option>
+      <option value="Prefer Not to Say">Prefer Not to Say</option>
+      <option value="Well-off">Well-Off</option>
+      <option value="Working Class">Working Class</option>
+      <option value="Affluent">Affluent</option>
+      <option value="Struggling Financially">Struggling Financially</option>
+    </select>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="4" cols="50" placeholder="Enter a brief description about yourself..."></textarea>
+    
+    <hr>
+
+    <h2>Add Photo</h2>
+    <label for="photo">Upload Photo:</label>
+    <input type="file" id="photo" name="photo" accept="image/*">
+
+    <button type="submit">Register</button>
+  </div>
+</form>
+
+{% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for message in messages %}
+                Swal.fire({
+                    icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+                    title: "{% if message.tags == 'success' %}Success!{% elif message.tags == 'error' %}Error!{% else %}Notice{% endif %}",
+                    text: "{{ message }}",
+                    confirmButtonColor: "#3085d6",
+                    confirmButtonText: "OK"
+                });
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+
+
+</body>
+</html>
