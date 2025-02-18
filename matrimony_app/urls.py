@@ -11,6 +11,8 @@ urlpatterns = [
     path('registration/', views.registration_view, name='registration'),
     path('profile/', views.profile_view, name='profile'),
     path('logout/', views.user_logout, name='logout'),
+    path("edit_profile/", views.edit_profile, name="edit_profile"),
+    path("edit_preferences/", views.edit_preferences, name="edit_preferences"),
 ]
 
 # Serve media files only in DEBUG mode

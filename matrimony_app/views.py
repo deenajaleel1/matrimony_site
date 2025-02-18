@@ -107,12 +107,41 @@ def profile_view(request):
         return redirect("login")  # Redirect to login if no user is in session
 
     try:
-        member = Member.objects.get(id=user_id)  # Fetch the member using the stored ID
-        return render(request, 'profile.html', {"member": member})
+        member = Member.objects.get(id=user_id)  # Fetch the logged in member 
+        opposite_gender = "Female" if member.gender == "Male" else "Male"
+        opposite_profiles = Member.objects.filter(gender=opposite_gender)  # Fetch opposite gender profiles
+        print("Found opposite gender profiles:", opposite_profiles.count())  # Debugging line
+        return render(request, 'profile.html', {"member": member, "opposite_profiles": opposite_profiles})
     except Member.DoesNotExist:
         messages.error(request, "User not found.")
         return redirect("login")
     #return render(request, 'profile.html')
+
+def edit_profile(request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        messages.error(request, "You need to log in first.")
+        return redirect("login")
+
+    try:
+        member = Member.objects.get(id=user_id)
+        if request.method == "POST":
+            # Process form submission here (update member details)
+            member.name = request.POST.get("name", member.name)
+            member.dob = request.POST.get("dob", member.dob)
+            member.country = request.POST.get("country", member.country)
+            # Add other fields here...
+            member.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("profile")
+
+        return render(request, "edit_profile.html", {"member": member})
+    except Member.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect("login")
+
+def edit_preferences(request):
+    return redirect('login')
 
 def user_logout(request):
     logout(request)

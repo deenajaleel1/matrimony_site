@@ -126,7 +126,89 @@
       font-weight: bold;
       color: white;
   }
-  
+
+  /* Main Container */
+  .main-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+
+  /* Left Section (Profile Info) */
+  .left-section {
+    width: 25%;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-right: 2px solid #ddd;
+  }
+
+  .profile-info img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .profile-info h3 {
+    text-align: center;
+  }
+
+  .edit-icon {
+    font-size: 14px;
+    color: blue;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+  /* Preferences Section */
+  .preferences {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 2px solid #ddd;
+  }
+
+  /* Right Section (Profiles List) */
+  .right-section {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .profile-card {
+    width: 220px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .profile-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .initial-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff; /* Blue color */
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-transform: uppercase;
+}
+
   </style>
 </head>
 <body>
@@ -134,7 +216,7 @@
   <div class="taskbar">
     <div class="logo">Matrimonial</div>
     <div class="menu">
-      <a href="#"><i class="fas fa-home"></i> Home</a>
+      <a href="{% url 'profile' %}"><i class="fas fa-home"></i> Home</a>
       <a href="#"><i class="fas fa-heart"></i> Matches</a>
       <a href="#"><i class="fas fa-envelope"></i> Messages</a>
       <a href="#"><i class="fas fa-search"></i> Search</a>
@@ -162,6 +244,59 @@
     <p>This is your profile page. You can update your details, preferences, and more here.</p>
   </div>
 
+  <!-- Main Content -->
+  <div class="main-container">
+
+    <!-- Left Section: Profile Info -->
+    <div class="left-section">
+      <div class="profile-info">
+        <img src="{{ member.photo.url }}" alt="Profile Picture">
+        <h3>{{ member.name }}</h3>
+        <p><strong>DOB:</strong> {{ member.dob }}</p>
+        <p><strong>Place:</strong> {{ member.place }}</p>
+        <p><strong>Country:</strong> {{ member.country }}</p>
+        <a href="{% url 'edit_profile' %}"> 
+          <i class="fas fa-edit edit-icon"></i> Edit
+        </a>   
+      </div>
+
+      <div class="preferences">
+        <h3>Preferences</h3>
+        <p>Update your partner preferences here.</p>
+         <a href="{% url 'edit_preferences' %}">
+          <i class="fas fa-edit edit-icon"></i> Edit
+        </a>  
+      </div>
+    </div>
+
+    <!-- Right Section: Profiles List -->
+    <div class="right-section">
+      <h2>View Profiles</h3>
+      {% if opposite_profiles %}
+        {% for profile in opposite_profiles %}
+          <div class="profile-card">
+            {% if profile.photo %}
+              <img src="{{ profile.photo.url }}" alt="Profile Picture">
+            {% else %}
+              <div class="initial-avatar">
+                {{ profile.name|first|upper }}
+              </div>
+            {% endif %}
+            <p><strong>Name:</strong> {{ profile.name }}</p>
+            <p><strong>Age:</strong> {{ profile.dob }}</p>
+            <p><strong>Country:</strong> {{ profile.country }}</p>
+            <p><strong>Education:</strong> {{ profile.highest_education }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No profiles found.</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+
+  <!-- profile picture or initials in the task bar -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
         const profilePicture = document.getElementById("profile-picture");
