@@ -1,14 +1,20 @@
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from matrimony_app.models import Member
+from matrimony_app.models import Member ,Preferences
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
-from datetime import date
+from datetime import date,timedelta
+from django.forms import modelformset_factory
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
+from django.db.models import F
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # matrimony_app/views.py
@@ -61,6 +67,22 @@ def registration_view(request):
         state=request.POST.get('state')
         district=request.POST.get('district')
         city=request.POST.get('city')
+        # Family Details
+        father_name = request.POST.get("father_name", "")
+        father_occupation = request.POST.get("father_occupation", "")
+        mother_name = request.POST.get("mother_name", "")
+        mother_occupation = request.POST.get("mother_occupation", "")
+        siblings = request.POST.get("siblings", "Single Child")  # Default is Single Child
+        
+        # Sibling details (only if "Yes" is selected)
+        sibling_name = request.POST.get("sibling_name", "") if siblings == "Yes" else None
+        sibling_occupation = request.POST.get("sibling_occupation", "") if siblings == "Yes" else None
+        
+        # Job Details
+        current_job = request.POST.get("current_job", "")
+        company_name = request.POST.get("company_name", "")
+        job_location = request.POST.get("job_location", "")
+
         community=request.POST.get('community')
         financial_status=request.POST.get('financial_status')
         description=request.POST.get('description')
@@ -94,7 +116,15 @@ def registration_view(request):
         # ✅ Hash the Password Before Saving
         hashed_password = make_password(password)
         
-        register=Member(profile_for=profile_for,name=name,username=username,phone=phone,email=email,gender=gender,dob=dob,religion=religion,nationality=nationality,password=hashed_password,height=height,weight=weight,marital_status=marital_status,body_type=body_type,physically_challenged=physically_challenged,highest_education=highest_education,course=course,country=country,state=state,district=district,city=city,community=community,financial_status=financial_status,description=description,photo=photo)
+        register=Member(profile_for=profile_for,name=name,username=username,phone=phone,email=email,gender=gender,dob=dob,religion=religion,nationality=nationality,password=hashed_password,height=height,weight=weight,marital_status=marital_status,body_type=body_type,physically_challenged=physically_challenged,highest_education=highest_education,course=course,country=country,state=state,district=district,city=city,father_name=father_name,
+            father_occupation=father_occupation,
+            mother_name=mother_name,
+            mother_occupation=mother_occupation,
+            siblings=siblings,
+            sibling_name=sibling_name,
+            sibling_occupation=sibling_occupation,current_job=current_job,
+            company_name=company_name,
+            job_location=job_location,community=community,financial_status=financial_status,description=description,photo=photo)
         register.save()
         messages.success(request, "Registration successful! You can now log in.")
         return redirect('login')
@@ -116,29 +146,53 @@ def profile_view(request):
         messages.error(request, "User not found.")
         return redirect("login")
     #return render(request, 'profile.html')
+    
+    
+def profile_detail(request, id):
+    profile_user = get_object_or_404(Member, id=id)  # Fetch user by id
+    return render(request, 'profile_detail.html', {'user': profile_user})  # Send data to template
+
+
+def matches(request):
+    return render(request,'matches.html')
+
+@login_required
+def search_matches(request):
+    try:
+        # Get the logged-in user from the Member model using their ID
+        logged_in_member = Member.objects.get(id=request.user.id)
+    except Member.DoesNotExist:
+        return redirect("some_error_page")  # Handle case if member profile isn't found
+
+    if request.method == "GET":
+        district = request.GET.get("district", "")
+        religion = request.GET.get("religion", "")
+        community = request.GET.get("community", "")
+        marital_status = request.GET.get("marital_status", "")
+        financial_status = request.GET.get("financial_status", "")
+
+        # Determine opposite gender
+        opposite_gender = "Female" if logged_in_member.gender == "Male" else "Male"
+
+        # Filter members based on search criteria
+        matches = Member.objects.filter(
+            gender=opposite_gender,
+            district=district if district else logged_in_member.district,
+            religion=religion if religion else logged_in_member.religion,
+            community=community if community else logged_in_member.community,
+            marital_status=marital_status if marital_status else logged_in_member.marital_status,
+            financial_status=financial_status if financial_status else logged_in_member.financial_status
+        ).exclude(id=logged_in_member.id)  # Exclude the logged-in user
+
+        return render(request, "match_results.html", {"matches": matches})
+
+    return redirect("matches")  # Redirect to matches page if no search was performed
+
+
 
 def edit_profile(request):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        messages.error(request, "You need to log in first.")
-        return redirect("login")
+    return redirect('edit_profile')
 
-    try:
-        member = Member.objects.get(id=user_id)
-        if request.method == "POST":
-            # Process form submission here (update member details)
-            member.name = request.POST.get("name", member.name)
-            member.dob = request.POST.get("dob", member.dob)
-            member.country = request.POST.get("country", member.country)
-            # Add other fields here...
-            member.save()
-            messages.success(request, "Profile updated successfully!")
-            return redirect("profile")
-
-        return render(request, "edit_profile.html", {"member": member})
-    except Member.DoesNotExist:
-        messages.error(request, "User not found.")
-        return redirect("login")
 
 def edit_preferences(request):
     return redirect('login')

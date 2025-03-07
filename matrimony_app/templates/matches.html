@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrimony Match</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin-top: 50px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    {% include 'taskbar.html' %}
+    <div class="container">
+        <h2 class="text-center">Find Your Match</h2>
+        <form method="GET" action="{% url 'search_matches' %}">
+            <div class="mb-3">
+                <label class="form-label">District</label>
+                <select class="form-select" name="district">
+                    <option value="">Select District</option>
+                    <option value="Alappuzha">Alappuzha</option>
+                    <option value="Ernakulam">Ernakulam</option>
+                    <option value="Idukki">Idukki</option>
+                    <option value="Kannur">Kannur</option>
+                    <option value="Kasaragod">Kasaragod</option>
+                    <option value="Kollam">Kollam</option>
+                    <option value="Kottayam">Kottayam</option>
+                    <option value="Kozhikode">Kozhikode</option>
+                    <option value="Malappuram">Malappuram</option>
+                    <option value="Palakkad">Palakkad</option>
+                    <option value="Pathanamthitta">Pathanamthitta</option>
+                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                    <option value="Thrissur">Thrissur</option>
+                    <option value="Wayanad">Wayanad</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Religion</label>
+                <select class="form-select" name="religion">
+                    <option value="">Select Religion</option>
+                    <option value="Muslim">Muslim</option>
+                    <option value="Hindu">Hindu</option>
+                    <option value="Christian">Christian</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Marital Status</label>
+                <select class="form-select" name="marital_status">
+                    <option value="">Select Status</option>
+                    <option value="Never Married">Never Married</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Nikah Divorce">Nikah Divorce</option>
+                    <option value="Awaiting Divorce">Awaiting divorce</option>
+                    <option value="Seperated">Separated</option>
+                    <option value="Anulled">Anulled</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Community</label>
+                <select class="form-select" name="community">
+                    <option value="">Select Community</option>
+                    <!-- Hindu Communities -->
+                    <option value="Nair">Nair</option>
+                    <option value="Ezhava">Ezhava</option>
+                    <option value="Brahmin">Brahmin</option>
+                    <option value="Vishwakarma">Vishwakarma</option>
+                    <option value="Scheduled Caste (SC)">Scheduled Caste (SC)</option>
+  
+                    <!-- Muslim Communities -->
+                    <option value="Mappila">Mappila</option>
+                    <option value="Thangal">Thangal</option>
+  
+                <!-- Christian Communities -->
+                <option value="Syrian Christian">Syrian Christian</option>
+                <option value="Latin Catholic">Latin Catholic</option>
+                <option value="Jacobite">Jacobite</option>
+                <option value="Marthoma">Marthoma</option>
+  
+                <!-- Other Communities -->
+                <option value="Anglo-Indian">Anglo-Indian</option>
+                <option value="Jewish">Jewish</option>
+                <option value="Tribal">Tribal</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Financial Status</label>
+                <select class="form-select" name="financial_status">
+                    <option value="">Select Financial Status</option>
+                    <option value="Wealthy">Wealthy</option>
+                    <option value="Upper Middle Class">Upper Middle Class</option>
+                    <option value="Lower Middle Class">Lower Middle Class</option>
+                    <option value="Financially Stable">Financially Stable</option>
+                    <option value="Inherited Wealth">Inherited Wealth</option>
+                    <option value="Business Family">Business Family</option>
+                    <option value="Retired Family Income">Retired Family Income</option>
+                    <option value="Prefer Not to Say">Prefer Not to Say</option>
+                    <option value="Well-off">Well-Off</option>
+                    <option value="Working Class">Working Class</option>
+                    <option value="Affluent">Affluent</option>
+                    <option value="Struggling Financially">Struggling Financially</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+        </form>
+    </div>
+</body>
+</html>

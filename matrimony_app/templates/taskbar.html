@@ -1,0 +1,101 @@
+<!-- Taskbar -->
+<div class="taskbar">
+    <div class="logo">Matrimonial</div>
+    <div class="menu">
+      <a href="{% url 'profile' %}"><i class="fas fa-home"></i> Home</a>
+      <a href="{% url 'matches' %}"><i class="fas fa-heart"></i> Matches</a>
+      <a href="#"><i class="fas fa-envelope"></i> Messages</a>
+      <a href="#"><i class="fas fa-search"></i> Search</a>
+      <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+      <div class="user-account">
+        <div class="profile-picture">
+          {% if member.photo %}
+              <img src="{{ member.photo.url }}" alt="Profile Picture" class="loaded">
+          {% else %}
+              {{ member.username|first|upper }}  <!-- Shows first letter of username if no photo -->
+          {% endif %}
+        </div>
+        <div class="dropdown">
+          <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+          <a href="#"><i class="fas fa-edit"></i> Edit Profile</a>
+          <a href="#"><i class="fas fa-cog"></i> Edit Preferences</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+        padding-top: 50px; /* Adjust this based on the taskbar height */
+    }
+    .taskbar {
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        position:fixed;
+        width:100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color:rgb(33, 112, 50);
+        padding: 10px 20px;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+  
+      .taskbar .logo {
+        font-size: 24px;
+        font-weight: bold;
+      }
+  
+      .taskbar .menu {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+  
+      .taskbar .menu a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+  
+      .taskbar .menu a:hover {
+        color: #ffcccb;
+      }
+  
+      .taskbar .user-account {
+        position: relative;
+      }
+  
+      .taskbar .user-account .dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        padding: 10px;
+        z-index: 1;
+      }
+  
+      .taskbar .user-account:hover .dropdown {
+        display: block;
+      }
+  
+      .taskbar .user-account .dropdown a {
+        color: #333;
+        text-decoration: none;
+        display: block;
+        padding: 5px 10px;
+      }
+  
+      .taskbar .user-account .dropdown a:hover {
+        background-color: #f4f4f4;
+      }
+      
+  </style>
+  

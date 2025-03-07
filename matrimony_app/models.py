@@ -63,6 +63,41 @@ class Member(models.Model):
         ("Well-off", "Well-off"), ("Working Class", "Working Class"),
         ("Affluent", "Affluent"), ("Struggling Financially", "Struggling Financially"),
     ]
+    
+    FATHER_OCCUPATION_CHOICES = [
+        ("Business", "Business"),
+        ("IT", "IT"),
+        ("Engineer", "Engineer"),
+        ("Doctor", "Doctor"),
+        ("Government Job", "Government Job"),
+        ("Abroad", "Abroad"),
+        ("Other", "Other"),
+    ]
+    
+    MOTHER_OCCUPATION_CHOICES = [
+        ("Business", "Business"),
+        ("IT", "IT"),
+        ("Engineer", "Engineer"),
+        ("Doctor", "Doctor"),
+        ("Government Job", "Government Job"),
+        ("Home Maker", "Home Maker"),
+        ("Other", "Other"),
+    ]
+    
+    SIBLING_CHOICES = [
+        ("Single Child", "Single Child"),
+        ("Yes", "Yes"),
+    ]
+    
+    SIBLING_OCCUPATION_CHOICES = [
+        ("Studies", "Studies"),
+        ("Engineer", "Engineer"),
+        ("Doctor", "Doctor"),
+        ("Government Job", "Government Job"),
+        ("IT", "IT"),
+        ("Other", "Other"),
+    ]
+
 
     profile_for = models.CharField(max_length=20, choices=PROFILE_CHOICES)
     name = models.CharField(max_length=100)
@@ -71,14 +106,23 @@ class Member(models.Model):
     email = models.EmailField(max_length=254, blank=False, null=False,default="Not Specified", unique=True)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     dob = models.DateField()
+    age = models.IntegerField(null=True, blank=True)
     def clean(self):  # Validation method
         today = date.today()
         age = today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
         if age < 21:
             raise ValidationError("You must be at least 21 years old to register.")
+        
+    def calculate_age(self):
+        """Helper function to calculate age"""
+        if self.dob:
+            today = date.today()
+            return today.year - self.dob.year - ((today.month, today.day) < (self.dob.month, self.dob.day))
+        return None
 
     def save(self, *args, **kwargs):
         self.full_clean()  # Runs validation before saving
+        self.age = self.calculate_age()  # Store calculated age
         super().save(*args, **kwargs)
     religion = models.CharField(max_length=20, choices=RELIGION_CHOICES)
     nationality = models.CharField(max_length=20, default="Indian")
@@ -99,7 +143,33 @@ class Member(models.Model):
     description = models.TextField()
     photo = models.ImageField(upload_to="profile_photos/",null=True,blank=True)
     
+    #Family details
+    father_name = models.CharField(max_length=100, blank=True, null=True)
+    father_occupation = models.CharField(max_length=50, choices=FATHER_OCCUPATION_CHOICES, blank=True, null=True)
+    mother_name = models.CharField(max_length=100, blank=True, null=True)
+    mother_occupation = models.CharField(max_length=50, choices=MOTHER_OCCUPATION_CHOICES, blank=True, null=True)
+    siblings = models.CharField(max_length=20, choices=SIBLING_CHOICES, default="Single Child")
+    
+    # Additional fields for siblings (visible only if siblings == "Yes")
+    sibling_name = models.CharField(max_length=100, blank=True, null=True)
+    sibling_occupation = models.CharField(max_length=50, choices=SIBLING_OCCUPATION_CHOICES, blank=True, null=True)
+
+    # Job Details
+    current_job = models.CharField(max_length=100, blank=True, null=True)
+    company_name = models.CharField(max_length=100, blank=True, null=True)
+    job_location = models.CharField(max_length=100, blank=True, null=True)
+    
     def __str__(self):
         return self.name
+    
+class Preferences(models.Model):
+    user = models.OneToOneField('Member', on_delete=models.CASCADE)  # Link to Member model
+    district = models.CharField(max_length=100, blank=True, null=True)
+    religion = models.CharField(max_length=100, blank=True, null=True)
+    community = models.CharField(max_length=100, blank=True, null=True)
+    marital_status = models.CharField(max_length=50, blank=True, null=True)
+    financial_status = models.CharField(max_length=50, blank=True, null=True)
 
-
+    def __str__(self):
+        return f"{self.user.username}'s Preferences"
+   

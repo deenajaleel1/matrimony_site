@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.name }}'s Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .profile-container {
+            width: 60%;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .profile-details {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .profile-details p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .profile-buttons {
+            margin-top: 20px;
+        }
+
+        .profile-buttons button {
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .send-request-btn {
+            background-color: green;
+            color: white;
+        }
+
+        .block-user-btn {
+            background-color: red;
+            color: white;
+        }
+
+        .back-btn {
+            background-color: blue;
+            color: white;
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <h2>{{ user.name }}'s Profile</h2>
+        <img src="{{ user.photo.url }}" alt="Profile Picture" class="profile-pic">
+        
+        <div class="profile-details">
+            <p><strong>Username:</strong> {{ user.name }}</p>
+            <p><strong>Date of Birth:</strong> {{ user.dob }}</p>
+            <p><strong>Religion:</strong> {{ user.religion }}</p>
+            <p><strong>Nationality:</strong> {{ user.nationality }}</p>
+            <p><strong>Height:</strong> {{ user.height }}</p>
+            <p><strong>Weight:</strong> {{ user.weight }}</p>
+            <p><strong>Education:</strong> {{ user.highest_education }}</p>
+            <p><strong>Job:</strong> {{ user.current_job }}</p>
+            <p><strong>Company:</strong> {{ user.company_name }}</p>
+            <p><strong>Location:</strong> {{ user.job_location }}</p>
+        </div>
+
+        <div class="profile-buttons">
+            <button class="send-request-btn">Send Request</button>
+            <button class="block-user-btn">Block User</button>
+        </div>
+
+        <a href="{% url 'profile' %}" class="back-btn">Back to Profiles</a>
+    </div>
+
+</body>
+</html>

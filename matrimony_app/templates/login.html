@@ -7,8 +7,57 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>Login Page</title>
     <link rel="stylesheet" href="{% static 'logincss.css' %}">
+<style>
+    /* Reset default margin and padding for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    background-color:rgb(44, 134, 65); /* Exact green color */
+    overflow: hidden;
+    padding: 10px 20px;
+    width: 100%; /* Ensure it spans the full width */
+    position: fixed; /* Optional: Fix it at the top */
+    top: 0; /* Optional: Fix it at the top */
+    left: 0; /* Optional: Fix it at the top */
+    z-index: 1000; /* Optional: Ensure it stays above other content */
+}
+
+.navbar a {
+    float: right; /* Align links to the right */
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.navbar .logo {
+    float: left; /* Align logo to the left */
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+</style>
 </head>
 <body>
+    <!-- navigation bar -->
+  <div class="navbar">
+    <a href="" class="logo">Matrimonial</a>
+    <a href="#contact">Contact Us</a>
+    <a href="#about">About Us</a>
+    <a href="{% url 'home' %}">Home</a>
+</div>
     <div class="background"></div>
         <style>
             .background {
