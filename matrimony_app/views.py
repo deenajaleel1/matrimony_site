@@ -12,7 +12,7 @@ from datetime import date,timedelta
 from django.forms import modelformset_factory
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import Q
+from django.db.models import Q,Max
 from django.db.models import F
 from django.contrib.auth.decorators import login_required
 import json
@@ -231,7 +231,32 @@ def send_message(request, receiver_id):
     return HttpResponse("Invalid request method.", status=405)
 
 def recent_chats(request):
-    return render(request, 'recent_chats.html')
+    user_id = request.session.get('user_id')  # Get logged-in user's ID
+    user = get_object_or_404(Member, id=user_id)
+
+    # Get all distinct users the logged-in user has interacted with
+    recent_chat_users = Member.objects.filter(
+        Q(sent_messages__receiver=user) | Q(received_messages__sender=user)
+    ).distinct().annotate(last_message_time=Max('sent_messages__timestamp'))
+
+    # Sort users by last message time (descending order)
+    recent_chat_users = recent_chat_users.order_by('-last_message_time')
+
+    # Fetch the last message exchanged with each user
+    recent_chats = []
+    for chat_user in recent_chat_users:
+        last_message = Chat.objects.filter(
+            (Q(sender=user, receiver=chat_user) | Q(sender=chat_user, receiver=user))
+        ).order_by('-timestamp').first()
+
+        if last_message:
+            recent_chats.append({
+                'user': chat_user,
+                'last_message': last_message.message,
+                'timestamp': last_message.timestamp
+            })
+
+    return render(request, 'recent_chats.html', {'recent_chats': recent_chats})
 
 def edit_profile(request):
     return redirect('edit_profile')
