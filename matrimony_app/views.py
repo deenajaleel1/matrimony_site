@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from matrimony_app.models import Member ,Preferences
+from matrimony_app.models import Member, Chat 
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.hashers import check_password
@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django.db.models import F
 from django.contrib.auth.decorators import login_required
+import json
+from django.http import HttpResponse
 
 # Create your views here.
 # matrimony_app/views.py
@@ -156,39 +158,80 @@ def profile_detail(request, id):
 def matches(request):
     return render(request,'matches.html')
 
-@login_required
-def search_matches(request):
-    try:
-        # Get the logged-in user from the Member model using their ID
-        logged_in_member = Member.objects.get(id=request.user.id)
-    except Member.DoesNotExist:
-        return redirect("some_error_page")  # Handle case if member profile isn't found
 
-    if request.method == "GET":
-        district = request.GET.get("district", "")
-        religion = request.GET.get("religion", "")
-        community = request.GET.get("community", "")
-        marital_status = request.GET.get("marital_status", "")
-        financial_status = request.GET.get("financial_status", "")
+def search_matches(request):
+    user_id = request.session.get("user_id")  # Get user ID from session
+    if not user_id:
+        messages.error(request, "You need to log in first.")
+        return redirect("login")
+        
+    logged_in_member = Member.objects.get(id=user_id)
+    
+    matches=[]
+
+    if request.method == "POST":
+        district = request.POST.get("district", "").strip()
+        religion = request.POST.get("religion", "").strip()
+        community = request.POST.get("community", "").strip()
+        marital_status = request.POST.get("marital_status", "").strip()
+        financial_status = request.POST.get("financial_status", "").strip()
 
         # Determine opposite gender
         opposite_gender = "Female" if logged_in_member.gender == "Male" else "Male"
 
         # Filter members based on search criteria
         matches = Member.objects.filter(
-            gender=opposite_gender,
-            district=district if district else logged_in_member.district,
-            religion=religion if religion else logged_in_member.religion,
-            community=community if community else logged_in_member.community,
-            marital_status=marital_status if marital_status else logged_in_member.marital_status,
-            financial_status=financial_status if financial_status else logged_in_member.financial_status
-        ).exclude(id=logged_in_member.id)  # Exclude the logged-in user
-
+            gender=opposite_gender
+        )
+        
+        if district:
+            matches = matches.filter(district__iexact=district)
+        if religion:
+            matches = matches.filter(religion__iexact=religion)
+        if community:
+            matches = matches.filter(community__iexact=community)
+        if marital_status:
+            matches = matches.filter(marital_status__iexact=marital_status)
+        if financial_status:
+            matches = matches.filter(financial_status__iexact=financial_status)
+            
+        matches=matches.exclude(id=logged_in_member.id)  # Exclude the logged-in user
+        print(matches)
         return render(request, "match_results.html", {"matches": matches})
-
     return redirect("matches")  # Redirect to matches page if no search was performed
 
+def chat_view(request, receiver_id):
+    sender_id = request.session.get('user_id')  # Get logged-in user's ID from session
+    sender = get_object_or_404(Member, id=sender_id)
+    receiver = get_object_or_404(Member, id=receiver_id)  # Fetch the receiver
+    
+    # Fetch messages between sender and receiver
+    messages = Chat.objects.filter(
+        sender__in=[sender, receiver], receiver__in=[sender, receiver]
+    ).order_by('timestamp')
+    
+    return render(request, 'chat.html', {"receiver": receiver,'messages': messages})
 
+def send_message(request, receiver_id):
+    print("Request method:", request.method)  # Debugging line
+    print("Session data:", request.session.items())  # Print entire session
+    if request.method == "POST":
+        sender_id = request.session.get('user_id')  # Get logged-in user ID
+        print("Sender ID from session:", sender_id)  # Debugging sender_id
+        sender = get_object_or_404(Member, id=sender_id)
+        receiver = get_object_or_404(Member, id=receiver_id)
+
+        message = request.POST.get('message', '').strip()  # Extract message text
+        if message:
+            Chat.objects.create(sender=sender, receiver=receiver, message=message)
+            return HttpResponse("success")  # Simple text response
+        else:
+            return HttpResponse("Message cannot be empty.", status=400)
+
+    return HttpResponse("Invalid request method.", status=405)
+
+def recent_chats(request):
+    return render(request, 'recent_chats.html')
 
 def edit_profile(request):
     return redirect('edit_profile')

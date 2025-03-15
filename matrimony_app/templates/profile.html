@@ -166,13 +166,6 @@
     border-radius: 50%;
     text-transform: uppercase;
 }
-.like-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: red;
-}
 
 .view-btn {
   background: green;
@@ -229,7 +222,7 @@ input, select {
     <div class="menu">
       <a href="{% url 'profile' %}"><i class="fas fa-home"></i> Home</a>
       <a href="{% url 'matches' %}"><i class="fas fa-heart"></i> Matches</a>
-      <a href="#"><i class="fas fa-envelope"></i> Messages</a>
+      <a href="{% url 'recent_chats' %}"><i class="fas fa-envelope"></i> Recent Chats</a>
       <a href="#"><i class="fas fa-search"></i> Search</a>
       <a href="#"><i class="fas fa-bell"></i> Notifications</a>
       <div class="user-account">
@@ -271,13 +264,10 @@ input, select {
               </div>
             {% endif %}
             <p><strong>Name:</strong> {{ profile.name }}</p>
-            <p><strong>Age:</strong> {{ profile.dob }}</p>
-            <p><strong>Country:</strong> {{ profile.country }}</p>
+            <p><strong>Age:</strong> {{ profile.age }}</p>
+            <p><strong>District:</strong> {{ profile.district }}</p>
             <p><strong>Education:</strong> {{ profile.highest_education }}</p>
             <div class="buttons">
-              <!-- Like Button -->
-              <button class="like-btn" onclick="likeProfile({{ profile.id }})">❤️</button>
-
               <!-- View Profile Button -->
               <a href="{% url 'profile_detail' profile.id %}" class="view-btn">View Profile</a>
           </div>
@@ -306,17 +296,6 @@ input, select {
             profileInitials.textContent = getInitials(userName);
         }
     });
-</script>
-<script>
-  function likeProfile(profileId) {
-      fetch(`/like/${profileId}/`, { method: 'POST', headers: {'X-CSRFToken': '{{ csrf_token }}' } })
-      .then(response => response.json())
-      .then(data => {
-          if (data.liked) {
-              alert("Profile liked!");
-          }
-      });
-  }
 </script>
 </body>
 </html>

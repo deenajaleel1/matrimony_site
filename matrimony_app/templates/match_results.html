@@ -29,13 +29,6 @@
             border-radius: 50%;
             object-fit: cover;
         }
-        .like-button {
-            border: none;
-            background: none;
-            color: red;
-            font-size: 24px;
-            cursor: pointer;
-        }
         .view-profile {
             text-decoration:none;
             background-color: green;
@@ -55,10 +48,11 @@
 <body>
     <!-- Back button -->
     <a href="{% url 'matches' %}" class="btn btn-secondary back-button">Back</a>
-
+     
     <div class="container">
         <h2 class="text-center">Match Results</h2>
         <div class="row">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrf-token">
             {% for match in matches %}
             <div class="col-md-4 mb-4">
                 <div class="profile-card">
@@ -66,7 +60,6 @@
                     <h5 class="mt-2"><b>Name:</b>{{ match.name }}</h5>
                     <p><b>Age:</b> {{ match.age }}</p>
                     <p><b>District:</b> {{ match.district }}</p>
-                    <button class="like-button">❤️</button>
                     <a href="{% url 'profile_detail' id=match.id %}" class="view-profile">View Profile</a>
                 </div>
             </div>
@@ -75,5 +68,7 @@
             {% endfor %}
         </div>
     </div>
+
+     
 </body>
 </html>

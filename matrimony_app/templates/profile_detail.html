@@ -54,10 +54,9 @@
             cursor: pointer;
             font-size: 16px;
         }
-
-        .send-request-btn {
-            background-color: green;
-            color: white;
+        .chat-user-btn{
+            background-color:green;
+            color:white;
         }
 
         .block-user-btn {
@@ -96,7 +95,8 @@
         </div>
 
         <div class="profile-buttons">
-            <button class="send-request-btn">Send Request</button>
+            <a href="{% url 'chat_view' user.id %}"><button class="chat-user-btn">
+                Chat</button></a>
             <button class="block-user-btn">Block User</button>
         </div>
 

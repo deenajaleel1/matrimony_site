@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Chats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .chat-list-container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .chat-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .chat-item:hover {
+            background: #f1f1f1;
+        }
+        .back-btn {
+            margin-bottom: 10px;
+            background: #555;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='/matches/'">Back to Matches</button>
+    <div class="chat-list-container">
+        <h3>Recent Chats</h3>
+        <div class="chat-item" onclick="openChat(1)">
+            <img src="profile1.jpg" alt="Profile">
+            <div>
+                <strong>John Doe</strong>
+                <p>Last message preview...</p>
+            </div>
+        </div>
+        <div class="chat-item" onclick="openChat(2)">
+            <img src="profile2.jpg" alt="Profile">
+            <div>
+                <strong>Jane Smith</strong>
+                <p>Last message preview...</p>
+            </div>
+        </div>
+        <!-- More chat items will be added dynamically -->
+    </div>
+    
+    <script>
+        function openChat(memberId) {
+            window.location.href = '/chat/' + memberId + '/';
+        }
+    </script>
+</body>
+</html>

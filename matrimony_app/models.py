@@ -2,6 +2,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.utils.timezone import now
 
 class Member(models.Model):
     PROFILE_CHOICES = [
@@ -159,17 +160,18 @@ class Member(models.Model):
     company_name = models.CharField(max_length=100, blank=True, null=True)
     job_location = models.CharField(max_length=100, blank=True, null=True)
     
+    
     def __str__(self):
         return self.name
     
-class Preferences(models.Model):
-    user = models.OneToOneField('Member', on_delete=models.CASCADE)  # Link to Member model
-    district = models.CharField(max_length=100, blank=True, null=True)
-    religion = models.CharField(max_length=100, blank=True, null=True)
-    community = models.CharField(max_length=100, blank=True, null=True)
-    marital_status = models.CharField(max_length=50, blank=True, null=True)
-    financial_status = models.CharField(max_length=50, blank=True, null=True)
+class Chat(models.Model):
+    sender = models.ForeignKey('Member', on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey('Member', on_delete=models.CASCADE, related_name='received_messages')
+    message = models.TextField()
+    timestamp = models.DateTimeField(default=now)
+
+    class Meta:
+        ordering = ['-timestamp']  # Show recent messages first
 
     def __str__(self):
-        return f"{self.user.username}'s Preferences"
-   
+        return f"{self.sender} → {self.receiver}: {self.message[:30]}"

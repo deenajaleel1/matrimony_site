@@ -1,15 +1,21 @@
 from django.contrib import admin
-from .models import Member, Preferences
+from .models import Member, Chat
 
-class PreferencesInline(admin.StackedInline):  # Display Preferences inside Member
-    model = Preferences
-    can_delete = False  
-    extra = 0  # Don't show extra empty fields
+
     
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
     list_display = ("name", "username", "phone", "gender", "dob", "marital_status")
     search_fields = ("name", "username", "phone")
-    inlines = [PreferencesInline]  # Attach Preferences inside Member profile
+   
 
+@admin.register(Chat)
+class ChatAdmin(admin.ModelAdmin):
+    list_display = ('id', 'sender', 'receiver', 'message_preview', 'timestamp')
+    search_fields = ('sender__name', 'receiver__name', 'message')
+    list_filter = ('timestamp',)
 
+    def message_preview(self, obj):
+        return obj.message[:50]  # Show first 50 characters in admin panel
+
+    message_preview.short_description = "Message"
