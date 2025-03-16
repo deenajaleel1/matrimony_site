@@ -5,8 +5,7 @@
       <a href="{% url 'profile' %}"><i class="fas fa-home"></i> Home</a>
       <a href="{% url 'matches' %}"><i class="fas fa-heart"></i> Matches</a>
       <a href="{% url 'recent_chats' %}"><i class="fas fa-envelope"></i> Recent Chats</a>
-      <a href="#"><i class="fas fa-search"></i> Search</a>
-      <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+      <a href="{% url 'search_users' %}"><i class="fas fa-search"></i> Search</a>
       <div class="user-account">
         <div class="profile-picture">
           {% if member.photo %}
@@ -18,7 +17,6 @@
         <div class="dropdown">
           <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Log Out</a>
           <a href="#"><i class="fas fa-edit"></i> Edit Profile</a>
-          <a href="#"><i class="fas fa-cog"></i> Edit Preferences</a>
         </div>
       </div>
     </div>

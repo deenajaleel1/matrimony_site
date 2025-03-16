@@ -258,6 +258,15 @@ def recent_chats(request):
 
     return render(request, 'recent_chats.html', {'recent_chats': recent_chats})
 
+
+def search_users(request):
+    query = request.GET.get('q', '')  # Get the search query from the input box
+    print("Search Query:", query)  # Debugging - Check if query is received
+    users = Member.objects.filter(name__icontains=query) if query else []  # Filter users by name (case-insensitive)
+    print("Matching Users:", users)  # Debugging - Check if users are found in the database
+    return render(request, 'search.html', {'users': users, 'query': query})  # Pass data to the template
+
+
 def edit_profile(request):
     return redirect('edit_profile')
 
