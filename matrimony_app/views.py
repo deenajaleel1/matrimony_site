@@ -268,11 +268,35 @@ def search_users(request):
 
 
 def edit_profile(request):
-    return redirect('edit_profile')
+    if "user_id" not in request.session:  # Check if the user is logged in
+        return redirect("login")  # Redirect to login page if not logged in
+
+    user_id = request.session["user_id"]  # Get logged-in Member's ID
+    member = Member.objects.get(id=user_id)  # Fetch user details from Member model
+
+    if request.method == "POST":
+        print("Received POST request")  # Debugging
+        # Handling Profile Picture Upload
+        if "photo" in request.FILES:
+            member.photo = request.FILES["photo"]
+        else:
+            print("No profile picture uploaded")  # Debugging
+
+        # Editable Fields
+        member.age = request.POST.get("age")
+        member.district = request.POST.get("district")
+        member.community = request.POST.get("community")
+        member.marital_status = request.POST.get("marital_status")
+        member.financial_status = request.POST.get("financial_status")
+        member.highest_education = request.POST.get("highest_education")
+
+        member.save()  # Save changes to the database
+        return redirect("profile")  # Redirect to profile page after saving
 
 
-def edit_preferences(request):
-    return redirect('login')
+    return render(request, 'edit_profile.html', {"user": member})
+
+
 
 def user_logout(request):
     logout(request)

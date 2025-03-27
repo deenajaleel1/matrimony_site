@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 50%;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: darkgreen;
+        }
+        .back-btn {
+            background-color: gray;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Profile</h2>
+        <form method="POST" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <img src="{{ user.photo.url }}" class="profile-pic" alt="Profile Picture">
+            <p><strong>Name:</strong> {{ user.name }}</p>
+            <p><strong>Gender:</strong> {{ user.gender }}</p>
+            <p><strong>Religion:</strong> {{ user.religion }}</p>
+
+
+            <label><b>Upload Photo</b></label>
+            <input type="file" name="photo" accept="image/*">
+            
+            <label><b>Age:</b></label>
+            <input type="number" name="age" value="{{ user.age }}" required>
+            
+            <label><b>District:</b></label>
+            <select name="district">
+                <option value="">Select District</option>
+                <option value="Alappuzha" {% if user.district == "Alappuzha" %}selected{% endif %}>Alappuzha</option>
+                <option value="Ernakulam" {% if user.district == "Ernakulam" %}selected{% endif %}>Ernakulam</option>
+                <option value="Idukki" {% if user.district == "Idukki" %}selected{% endif %}>Idukki</option>
+                <option value="Kannur" {% if user.district == "Kannur" %}selected{% endif %}>Kannur</option>
+                <option value="Kasaragod" {% if user.district == "Kasaragod" %}selected{% endif %}>Kasaragod</option>
+                <option value="Kollam" {% if user.district == "Kollam" %}selected{% endif %}>Kollam</option>
+                <option value="Kottayam" {% if user.district == "Kottayam" %}selected{% endif %}>Kottayam</option>
+                <option value="Kozhikode" {% if user.district == "Kozhikode" %}selected{% endif %}>Kozhikode</option>
+                <option value="Malappuram" {% if user.district == "Malappuram" %}selected{% endif %}>Malappuram</option>
+                <option value="Palakkad" {% if user.district == "Palakkad" %}selected{% endif %}>Palakkad</option>
+                <option value="Pathanamthitta" {% if user.district == "Pathanamthitta" %}selected{% endif %}>Pathanamthitta</option>
+                <option value="Thiruvananthapuram" {% if user.district == "Thiruvananthapuram" %}selected{% endif %}>Thiruvananthapuram</option>
+                <option value="Thrissur" {% if user.district == "Thrissur" %}selected{% endif %}>Thrissur</option>
+                <option value="Wayanad" {% if user.district == "Wayanad" %}selected{% endif %}>Wayanad</option>
+            </select>
+            
+            <label><b>Community:</b></label>
+            <select name="community">
+                <!-- Hindu Communities -->
+                <option value="Nair" {% if user.community == "Nair" %}selected{% endif %}>Nair</option>
+                <option value="Ezhava" {% if user.community == "Ezhava" %}selected{% endif %}>Ezhava</option>
+                <option value="Brahmin" {% if user.community == "Brahmin" %}selected{% endif %}>Brahmin</option>
+                <option value="Vishwakarma" {% if user.community == "Vishwakarma" %}selected{% endif %}>Vishwakarma</option>
+                <option value="Scheduled Caste (SC)" {% if user.community == "Scheduled Caste (SC)" %}selected{% endif %}>Scheduled Caste (SC)</option>
+            
+                <!-- Muslim Communities -->
+                <option value="Mappila"  {% if user.community == "Mappila" %}selected{% endif %}>Mappila</option>
+                <option value="Thangal"  {% if user.community == "Thangal" %}selected{% endif %}>Thangal</option>
+  
+                <!-- Christian Communities -->
+                <option value="Syrian Christian" {% if user.community == "Syrian Christian" %}selected{% endif %}>Syrian Christian</option>
+                <option value="Latin Catholic" {% if user.community == "Latin Catholic" %}selected{% endif %}>Latin Catholic</option>
+                <option value="Jacobite" {% if user.community == "Jacobite" %}selected{% endif %}>Jacobite</option>
+                <option value="Marthoma" {% if user.community == "Marthoma" %}selected{% endif %}>Marthoma</option>
+                
+                <!-- Other Communities -->
+                <option value="Anglo-Indian" {% if user.community == "Anglo-Indian" %}selected{% endif %}>Anglo-Indian</option>
+                <option value="Jewish" {% if user.community == "Jewish" %}selected{% endif %}>Jewish</option>
+                <option value="Tribal" {% if user.community == "Tribal" %}selected{% endif %}>Tribal</option>
+            </select>
+
+
+            <label><b>Marital Status:</b></label>
+            <select name="marital_status">
+                <option value="Never Married" {% if user.marital_status == "Never Married" %}selected{% endif %}>Never Married</option>
+                <option value="Widowed" {% if user.marital_status == "Widowed" %}selected{% endif %}>Widowed</option>
+                <option value="Divorced" {% if user.marital_status == "Divorced" %}selected{% endif %}>Divorced</option>
+                <option value="Nikah Divorce" {% if user.marital_status == "Nikah Divorce" %}selected{% endif %}>Nikah Divorce</option>
+                <option value="Awaiting Divorce" {% if user.marital_status == "Awaiting Divorce" %}selected{% endif %}>Awaiting Divorce</option>
+                <option value="Separated" {% if user.marital_status == "Separated" %}selected{% endif %}>Separated</option>
+                <option value="Anulled" {% if user.marital_status == "Anulled" %}selected{% endif %}>Anulled</option>
+            </select>
+            
+            <label><b>Financial Status:</b></label>
+            <select name="financial_status">
+                <option value="Wealthy" {% if user.financial_status == "Wealthy" %}selected{% endif %}>Wealthy</option>
+                <option value="Upper Middle Class" {% if user.financial_status == "Upper Middle Class" %}selected{% endif %}>Upper Middle Class</option>
+                <option value="Lower Middle Class" {% if user.financial_status == "Lower Middle Class" %}selected{% endif %}>Lower Middle Class</option>
+                <option value="Financially Stable" {% if user.financial_status == "Financially Stable" %}selected{% endif %}>Financially Stable</option>
+                <option value="Inherited Wealth" {% if user.financial_status == "Inherited Wealth" %}selected{% endif %}>Inherited Wealth</option>
+                <option value="Business Family" {% if user.financial_status == "Business Family" %}selected{% endif %}>Business Family</option>
+                <option value="Retired Family Income" {% if user.financial_status == "Retired Family Income" %}selected{% endif %}>Retired Family Income</option>
+                <option value="Prefer Not to Say" {% if user.financial_status == "Prefer Not to Say" %}selected{% endif %}>Prefer Not to Say</option>
+                <option value="Well-off" {% if user.financial_status == "Well-off" %}selected{% endif %}>Well-Off</option>
+                <option value="Working Class" {% if user.financial_status == "Working Class" %}selected{% endif %}>Working Class</option>
+                <option value="Affluent" {% if user.financial_status == "Affluent" %}selected{% endif %}>Affluent</option>
+                <option value="Struggling Financially" {% if user.financial_status == "Struggling Financially" %}selected{% endif %}>Struggling Financially</option>
+            </select>
+            
+            <label><b>Education:</b></label>
+            <select name="highest_education">
+                <option value="Doctorate" {% if user.highest_education == "Doctorate"%}selected{% endif %}>Doctorate</option>
+                <option value="Masters" {% if user.highest_education == "Masters"%}selected{% endif %}>Masters</option>
+                <option value="Bachelors" {% if user.highest_education == "Bachelors"%}selected{% endif %}>Bachelors</option>
+                <option value="Diploma" {% if user.highest_education == "Diploma"%}selected{% endif %}>Diploma</option>
+                <option value="High/Secondary School" {% if user.highest_education == "High/Secondary School"%}selected{% endif %}>High/Secondary school</option>
+                <option value="Less than High School" {% if user.highest_education == "Less than High School"%}selected{% endif %}>Less than high school</option>
+            </select>
+            
+            
+            <button type="submit">Save Changes</button>
+            <a href="{% url 'profile' %}"><button type="button" class="back-btn">Back to Profile</button></a>
+        </form>
+    </div>
+</body>
+</html>
