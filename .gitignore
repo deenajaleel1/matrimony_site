@@ -1,0 +1,17 @@
+#Ignore the SQLite database
+db.sqlite3
+
+#Ignore Python cache files
+__pycache__/
+
+#Ignore your virtual enviornment folder
+Enviornment/
+env/
+venv/
+.venv/
+
+#Ignore uploaded media
+media/
+
+#VS code settings
+.vscode
